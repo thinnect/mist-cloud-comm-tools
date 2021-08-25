@@ -3,8 +3,8 @@
 Mist cloud AMQP message sniffer.
 """
 
-__copyright__ 'Thinnect Inc. 2021'
-__license__ 'MIT'
+__copyright__ = 'Thinnect Inc. 2021'
+__license__ = 'MIT'
 
 
 import pika
@@ -82,7 +82,8 @@ def main():
         print("Please specify --mist, --cloud or both!")
         return
 
-    if args.cloud
+    rkeys = []
+    if args.cloud:
         rkeys.append("cloud.{}.*".format(gateway))
 
     if args.mist:

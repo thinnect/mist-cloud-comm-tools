@@ -2,8 +2,8 @@
 Common input argument parsers.
 """
 
-__copyright__ 'Thinnect Inc. 2021'
-__license__ 'MIT'
+__copyright__ = 'Thinnect Inc. 2021'
+__license__ = 'MIT'
 
 
 def arg_hex2int(v):

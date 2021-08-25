@@ -3,8 +3,8 @@
 Mist cloud AMQP message sender.
 """
 
-__copyright__ 'Thinnect Inc. 2021'
-__license__ 'MIT'
+__copyright__ = 'Thinnect Inc. 2021'
+__license__ = 'MIT'
 
 import pika
 import argparse
