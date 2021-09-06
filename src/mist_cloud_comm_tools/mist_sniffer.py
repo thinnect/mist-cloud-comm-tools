@@ -25,19 +25,19 @@ verbose = False
 
 def message_received(ch, method, properties, body):
     if verbose:
-        print('RCV %s: %r' % (method.routing_key, body.hex().upper()))
+        print(f'RCV {method.routing_key}: {body.hex().upper()}')
 
     mm = MistMessage()
     try:
         mm.ParseFromString(body)
     except DecodeError:
-        print('\nERROR PARSING:\n{}\n{}\n'.format(method.routing_key, body.hex()))
+        print(f'\nERROR PARSING:\n{method.routing_key}\n{body.hex()}\n')
         return
-    print('@%s {%04X}%016X->%016X[%04X] %3d: %s %02X:%3d (%2d)' % (
-        format_proto_timestamp(mm.timestamp),
-        mm.group, mm.source, mm.destination, mm.amid,
-        len(mm.payload), mm.payload.hex().upper(),
-        mm.lqi, mm.rssi, mm.channel))
+
+    print(f'@{format_proto_timestamp(mm.timestamp)}'
+          f' {{{mm.group:04X}}}{mm.source:016X}->{mm.destination:016X}[{mm.amid:04X}]'
+          f' {len(mm.payload):3d}: {mm.payload.hex().upper()}'
+          f' {mm.lqi:02X}:{mm.rssi:3d} ({mm.channel:2d})')
 
 
 def main():
@@ -75,7 +75,7 @@ def main():
     if args.gateway is None:
         gateway = '*'
     else:
-        gateway = "{:016X}".format(args.gateway)
+        gateway = f'{args.gateway:016X}'
 
     # Determine sniffing direction
     if args.cloud is False and args.mist is False:
@@ -84,10 +84,10 @@ def main():
 
     rkeys = []
     if args.cloud:
-        rkeys.append("cloud.{}.*".format(gateway))
+        rkeys.append(f'cloud.{gateway}.*')
 
     if args.mist:
-        rkeys.append("mist.{}.*".format(gateway))
+        rkeys.append(f'mist.{gateway}.*')
 
     # Set up a connection
     if args.noverify:
@@ -108,7 +108,7 @@ def main():
     # Allow queue name to be customized
     qn = args.queue
     if qn is None:
-        qn = 'mist-sniffer-{}-{}'.format(socket.gethostname(), gateway)
+        qn = f'mist-sniffer-{socket.gethostname()}-{gateway}'
 
     qdresult = channel.queue_declare(queue=qn, auto_delete=True)
     qname = qdresult.method.queue

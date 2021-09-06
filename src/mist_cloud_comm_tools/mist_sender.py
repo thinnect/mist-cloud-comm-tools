@@ -52,9 +52,9 @@ def main():
     args = parser.parse_args()
 
     if args.cloud:
-        rkey = "cloud.{:016X}.{:016X}".format(args.gateway, args.destination)
+        rkey = f'cloud.{args.gateway:016X}.{args.destination:016X}'
     else:
-        rkey = "mist.{:016X}.{:016X}".format(args.gateway, args.destination)
+        rkey = f'mist.{args.gateway:016X}.{args.destination:016X}'
 
     mm = MistMessage()
     mm.timestamp.GetCurrentTime()
@@ -84,11 +84,10 @@ def main():
 
     print(rkey)
 
-    print('@%s {%04X}%016X->%016X[%04X] %3d: %s %02X:%3d (%2d)' % (
-        format_proto_timestamp(mm.timestamp),
-        mm.group, mm.source, mm.destination, mm.amid,
-        len(mm.payload), mm.payload.hex().upper(),
-        mm.lqi, mm.rssi, mm.channel))
+    print(f'@{format_proto_timestamp(mm.timestamp)}'
+          f' {{{mm.group:04X}}}{mm.source:016X}->{mm.destination:016X}[{mm.amid:04X}]'
+          f' {len(mm.payload):3d}: {mm.payload.hex().upper()}'
+          f' {mm.lqi:02X}:{mm.rssi:3d} ({mm.channel:2d})')
 
     connection.close()
 
