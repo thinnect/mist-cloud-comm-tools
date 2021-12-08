@@ -30,14 +30,14 @@ def message_received(ch, method, properties, body):
     mm = MistMessage()
     try:
         mm.ParseFromString(body)
+        print(f'@{format_proto_timestamp(mm.timestamp)}'
+              f' {{{mm.group:04X}}}{mm.source:016X}->{mm.destination:016X}[{mm.amid:04X}]'
+              f' {len(mm.payload):3d}: {mm.payload.hex().upper()}'
+              f' {mm.lqi:02X}:{mm.rssi:3d} ({mm.channel:2d})')
     except DecodeError:
         print(f'\nERROR PARSING:\n{method.routing_key}\n{body.hex()}\n')
-        return
 
-    print(f'@{format_proto_timestamp(mm.timestamp)}'
-          f' {{{mm.group:04X}}}{mm.source:016X}->{mm.destination:016X}[{mm.amid:04X}]'
-          f' {len(mm.payload):3d}: {mm.payload.hex().upper()}'
-          f' {mm.lqi:02X}:{mm.rssi:3d} ({mm.channel:2d})')
+    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def main():
